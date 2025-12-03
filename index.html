@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>LoopOS · SystemFlow Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- Header + Kernel Panel -->
+    <header class="app-header card">
+      <div class="header-main">
+        <h1>LoopOS</h1>
+        <p class="subtitle">SystemFlow · Dein kleines Human-OS für Loops, Fokus & Klarheit.</p>
+      </div>
+
+      <section class="kernel-panel" aria-label="System-Kernel">
+        <button class="kernel-core" id="kernel-core" type="button">
+          <span class="kernel-dot"></span>
+        </button>
+        <div class="kernel-info">
+          <div class="kernel-row">
+            <span class="kernel-label" id="kernel-mode-label">Systemmodus: Operator</span>
+            <span class="kernel-tag" id="kernel-status-tag">Stabil</span>
+          </div>
+          <div class="kernel-metrics">
+            <div class="kernel-metric">
+              <span class="metric-label">Overload</span>
+              <div class="metric-bar">
+                <div class="metric-fill" id="metric-overload"></div>
+              </div>
+              <span class="metric-value" id="metric-overload-value">20%</span>
+            </div>
+            <div class="kernel-metric">
+              <span class="metric-label">Momentum</span>
+              <div class="metric-bar">
+                <div class="metric-fill metric-fill-momentum" id="metric-momentum"></div>
+              </div>
+              <span class="metric-value" id="metric-momentum-value">40%</span>
+            </div>
+            <div class="kernel-metric">
+              <span class="metric-label">Shutdown-Risiko</span>
+              <div class="metric-bar">
+                <div class="metric-fill metric-fill-shutdown" id="metric-shutdown"></div>
+              </div>
+              <span class="metric-value" id="metric-shutdown-value">10%</span>
+            </div>
+          </div>
+          <p class="kernel-advice" id="kernel-advice">
+            System ruhig. Einen kleinen Loop sauber schließen.
+          </p>
+        </div>
+      </section>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tab-bar card">
+      <button class="tab-button active" data-tab="loops">Loops</button>
+      <button class="tab-button" data-tab="belege">Belege</button>
+      <button class="tab-button" data-tab="modus">Modus</button>
+      <button class="tab-button" data-tab="ideen">Ideen</button>
+      <button class="tab-button" data-tab="focus">Fokus</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <!-- Loops -->
+      <section class="tab-panel active" id="tab-loops">
+        <div class="panel-header">
+          <h2>Loops</h2>
+          <p>Kleine Zyklen definieren, bewusst schließen und aus dem Kopf bekommen.</p>
+        </div>
+
+        <form id="loop-form" class="card form-card">
+          <h3>Neuen Loop anlegen</h3>
+          <label>
+            Titel
+            <input type="text" id="loop-title" autocomplete="off"
+                   placeholder="z.B. Mail an X, Unterlagen sortieren…" />
+          </label>
+          <label>
+            Abschluss-Kriterium
+            <input type="text" id="loop-criterion" autocomplete="off"
+                   placeholder="Woran erkennst du, dass der Loop geschlossen ist?" />
+          </label>
+          <button type="submit" class="primary-btn">Loop speichern</button>
+        </form>
+
+        <div class="list-header">
+          <h3>Deine Loops</h3>
+          <button class="ghost-btn" id="toggle-loops-view">Nur offene / alle</button>
+        </div>
+        <ul id="loop-list" class="item-list" aria-live="polite"></ul>
+      </section>
+
+      <!-- Belege -->
+      <section class="tab-panel" id="tab-belege">
+        <div class="panel-header">
+          <h2>Kompetenz-Belege</h2>
+          <p>Nur Tatsachen. Kein Gefühl. Was existiert, weil du es gemacht hast.</p>
+        </div>
+
+        <form id="entry-form" class="card form-card">
+          <h3>Neuer Beleg</h3>
+          <label>
+            Datum
+            <input type="date" id="entry-date" />
+          </label>
+          <label>
+            Output
+            <input type="text" id="entry-output" autocomplete="off"
+                   placeholder="Was ist konkret entstanden?" />
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="entry-fulfilled" />
+            <span>Zweck erfüllt?</span>
+          </label>
+          <button type="submit" class="primary-btn">Beleg hinzufügen</button>
+        </form>
+
+        <div class="list-header">
+          <h3>Deine Belege</h3>
+          <button class="ghost-btn" id="clear-entries">Alle Belege exportieren & leeren</button>
+        </div>
+        <ul id="entry-list" class="item-list" aria-live="polite"></ul>
+      </section>
+
+      <!-- Fokus -->
+      <section class="tab-panel" id="tab-focus">
+        <div class="panel-header">
+          <h2>Fokusblock</h2>
+          <p>Einen Loop konzentriert schließen – mit sanfter Erinnerung am Ende.</p>
+        </div>
+
+        <div class="card focus-card">
+          <h3>Fokus konfigurieren</h3>
+
+          <label>
+            Wähle einen Loop
+            <select id="focus-loop-select">
+              <option value="" disabled selected>-- Bitte wählen --</option>
+            </select>
+          </label>
+
+          <div class="focus-config">
+            <label>
+              Fokus-Dauer (Minuten)
+              <input type="number" id="focus-minutes" min="5" max="120" value="25" />
+            </label>
+            <div class="focus-display" id="focus-display">25:00</div>
+          </div>
+
+          <div class="focus-actions">
+            <button id="focus-start" class="primary-btn">Start</button>
+            <button id="focus-pause" class="ghost-btn">Pause</button>
+            <button id="focus-reset" class="ghost-btn">Reset</button>
+          </div>
+
+          <div class="focus-notify">
+            <button id="focus-notify-btn" class="chip-toggle" type="button">
+              Benachrichtigen
+            </button>
+            <span id="focus-notify-label">Benachrichtigungen: Aus</span>
+          </div>
+
+          <p class="focus-note">
+            Tipp: Nutze den Fokusblock nur für eine einzige, klar definierte Sache.
+          </p>
+        </div>
+      </section>
+
+      <!-- Modus -->
+      <section class="tab-panel" id="tab-modus">
+        <div class="panel-header">
+          <h2>Systemmodus</h2>
+          <p>Du benennst nur den Zustand – nicht deinen Wert.</p>
+        </div>
+
+        <div class="card mode-card">
+          <h3>Aktueller Modus</h3>
+          <p class="mode-description" id="mode-description">
+            Operator: Klar, strukturiert, Loops schließen, Systeme stabilisieren.
+          </p>
+          <div class="mode-toggle-row">
+            <button class="chip-toggle active" data-mode="operator" type="button">Operator</button>
+            <button class="chip-toggle" data-mode="overload" type="button">Überlast</button>
+          </div>
+          <p class="note">
+            Der Kernel passt seine Empfehlungen an deinen Modus an. Überlast heißt:
+            kleine Schritte, minimal planen, nur Loops entlasten.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Kurze Selbst-Fragen</h3>
+          <ul class="checklist">
+            <li>Kann ich gerade einen kleinen Loop zu Ende bringen?</li>
+            <li>Ist das Problem logisch – oder nur Last?</li>
+            <li>Welche eine Sache würde sofort Entlastung bringen?</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Ideen -->
+      <section class="tab-panel" id="tab-ideen">
+        <div class="panel-header">
+          <h2>Ideen-Parkdeck</h2>
+          <p>Ideen parken, statt dich zersplittern zu lassen.</p>
+        </div>
+
+        <form id="idea-form" class="card form-card">
+          <h3>Neue Idee parken</h3>
+          <label>
+            Titel
+            <input type="text" id="idea-title" autocomplete="off"
+                   placeholder="z.B. neutrales Dienstleister-Internet…" />
+          </label>
+          <label>
+            Stichpunkte (optional)
+            <textarea id="idea-notes" rows="3"
+                      placeholder="3 kurze Stichpunkte, nicht mehr."></textarea>
+          </label>
+          <button type="submit" class="primary-btn">Idee sichern</button>
+        </form>
+
+        <div class="list-header">
+          <h3>Geparkte Ideen</h3>
+          <button class="ghost-btn" id="export-ideas">Ideen exportieren</button>
+        </div>
+        <ul id="idea-list" class="item-list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span>LoopOS · lokal, offline, nur für dich.</span>
+    </footer>
+
+    <!-- Kernel-Advice Toast -->
+    <div id="ai-advice" class="ai-advice" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+  </html>
